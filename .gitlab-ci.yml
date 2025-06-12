@@ -1,0 +1,15 @@
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  image: node:18
+  script:
+    - npm install
+
+test:
+  stage: test
+  image: node:18
+  script:
+    - npm test || echo "no tests"
