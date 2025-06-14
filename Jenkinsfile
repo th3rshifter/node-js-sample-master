@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'node-js-sample'  // или другое имя NodeJS-инструмента
+        nodejs 'node-js-sample'
     }
 
     stages {
