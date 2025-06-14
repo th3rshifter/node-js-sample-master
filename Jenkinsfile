@@ -23,7 +23,7 @@ pipeline {
                 }
             }
         }
-
+        
         stage('Deploy to OpenShift') {
             agent any
             environment {
