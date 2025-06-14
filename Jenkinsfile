@@ -11,19 +11,21 @@ pipeline {
 
         stage('Build') {
             steps {
+                echo 'Installing dependencies...'
                 sh 'npm install'
             }
         }
 
         stage('Test') {
             steps {
+                echo 'Running tests...'
                 sh 'npm test || echo "No tests found"'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Placeholder: OpenShift deploy will go here'
+                echo 'OpenShift deploy step placeholder'
             }
         }
     }
