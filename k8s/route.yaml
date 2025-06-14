@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: node-js-sample
+spec:
+  to:
+    kind: Service
+    name: node-js-sample
+  port:
+    targetPort: 80
+  tls:
+    termination: edge
+  wildcardPolicy: None

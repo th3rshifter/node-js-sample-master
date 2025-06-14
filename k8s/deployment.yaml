@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-js-sample
+  labels:
+    app: node-js-sample
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-js-sample
+  template:
+    metadata:
+      labels:
+        app: node-js-sample
+    spec:
+      containers:
+        - name: node-js-sample
+          image: docker.io/library/node:18
+          ports:
+            - containerPort: 3000
+          command: ["node", "index.js"]
