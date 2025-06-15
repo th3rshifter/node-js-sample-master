@@ -37,9 +37,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                withCredentials([
-                    string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')
-                ]) {
+                withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
                     sh '''
                         echo Logging into OpenShift internal registry...
                         export PATH=$HOME/bin:$PATH
@@ -54,9 +52,7 @@ pipeline {
 
         stage('Deploy to OpenShift') {
             steps {
-                withCredentials([
-                    string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')
-                ]) {
+                withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
                     sh '''
                         echo Logging into OpenShift...
                         export PATH=$HOME/bin:$PATH
