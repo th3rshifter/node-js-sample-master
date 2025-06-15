@@ -14,14 +14,6 @@ spec:
     spec:
       containers:
         - name: node-js-sample
-          image: your-image:latest
+          image: image-registry.openshift-image-registry.svc:5000/th3rshifter-dev/node-nginx-sample
           ports:
-            - containerPort: 5000
-          command: ["node"]
-          args: ["index.js"]
-          workingDir: /usr/src/app
-          env:
-            - name: APP_PORT
-              value: "5000"
-            - name: API_KEY
-              value: "secret-key" 
+            - containerPort: 80

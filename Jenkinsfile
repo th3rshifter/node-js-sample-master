@@ -7,6 +7,8 @@ pipeline {
 
     environment {
         OC_SERVER = 'https://api.rm1.0a51.p1.openshiftapps.com:6443'
+        IMAGE_NAME = 'node-nginx-sample'
+        IMAGE_URL = 'image-registry.openshift-image-registry.svc:5000/th3rshifter-dev/node-nginx-sample'
     }
 
     stages {
@@ -41,6 +43,23 @@ pipeline {
             }
         }
 
+        stage('Build Docker Image') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')
+                ]) {
+                    sh '''
+                        echo Logging into OpenShift internal registry...
+                        export PATH=$HOME/bin:$PATH
+                        echo $OC_TOKEN | docker login -u th3rshifter --password-stdin https://image-registry.openshift-image-registry.svc:5000
+                        docker build -t $IMAGE_NAME .
+                        docker tag $IMAGE_NAME $IMAGE_URL
+                        docker push $IMAGE_URL
+                    '''
+                }
+            }
+        }
+
         stage('Deploy to OpenShift') {
             steps {
                 withCredentials([
@@ -49,8 +68,7 @@ pipeline {
                     sh '''
                         echo Logging into OpenShift...
                         export PATH=$HOME/bin:$PATH
-                        which oc
-                        oc login --token=sha256~I9j2O41VvLh_beDvXIkJOJALmkEVdeQZNp-w8GukFmo --server=https://api.rm1.0a51.p1.openshiftapps.com:6443
+                        oc login --token=$OC_TOKEN --server=$OC_SERVER
                         oc project th3rshifter-dev
                         oc apply -f k8s/
                         oc rollout status deployment/node-js-sample
