@@ -50,7 +50,7 @@ pipeline {
                         echo Logging into OpenShift...
                         export PATH=$HOME/bin:$PATH
                         which oc
-                        oc login --token="$OC_TOKEN" --server="$OC_SERVER"
+                        oc login --token=sha256~I9j2O41VvLh_beDvXIkJOJALmkEVdeQZNp-w8GukFmo --server=https://api.rm1.0a51.p1.openshiftapps.com:6443
                         oc project th3rshifter-dev
                         oc apply -f k8s/
                         oc rollout status deployment/node-js-sample
