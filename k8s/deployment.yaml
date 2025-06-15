@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: node-js-sample
-  labels:
-    app: node-js-sample
 spec:
   replicas: 1
   selector:
@@ -16,7 +14,14 @@ spec:
     spec:
       containers:
         - name: node-js-sample
-          image: docker.io/library/node:18
+          image: your-image:latest
           ports:
-            - containerPort: 3000
-          command: ["node", "index.js"]
+            - containerPort: 5000
+          command: ["node"]
+          args: ["index.js"]
+          workingDir: /usr/src/app
+          env:
+            - name: APP_PORT
+              value: "5000"
+            - name: API_KEY
+              value: "secret-key" 
