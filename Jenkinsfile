@@ -2,7 +2,11 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'node-js-sample'
+        nodejs 'node-js-sample' // Указан установленный через Jenkins Node.js Tool
+    }
+
+    environment {
+        PATH = "${tool 'node-js-sample'}/bin:${env.PATH}"
     }
 
     stages {
@@ -22,23 +26,27 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'npm test || echo "no tests found"'
+                sh 'npm test || echo "No tests found"'
             }
         }
 
         stage('Deploy to OpenShift') {
             steps {
                 withCredentials([
-                [$class: 'StringBinding', credentialsId: 'openshift-token', variable: 'OC_TOKEN'],
-                [$class: 'StringBinding', credentialsId: 'openshift-server', variable: 'OC_SERVER']
+                    string(credentialsId: 'openshift-token', variable: 'OC_TOKEN'),
+                    string(credentialsId: 'openshift-server', variable: 'OC_SERVER')
                 ]) {
-            sh '''
-            export PATH=$HOME/bin:$PATH
-            oc login --token=$OC_TOKEN --server=$OC_SERVER
-            oc project th3rshifter-dev
-            oc apply -f k8s/
-            oc rollout status deployment/node-js-sample
-            '''
+                    sh '''
+                        echo "Logging into OpenShift..."
+                        oc login --token=$OC_TOKEN --server=$OC_SERVER
+                        oc project th3rshifter-dev
+                        
+                        echo "Applying Kubernetes resources..."
+                        oc apply -f k8s/
+                        
+                        echo "Waiting for deployment rollout..."
+                        oc rollout status deployment/node-js-sample
+                    '''
                 }
             }
         }
