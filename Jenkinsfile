@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'node-js-sample' // Указан установленный через Jenkins Node.js Tool
+        nodejs 'node-js-sample'
     }
 
     environment {
@@ -30,6 +30,17 @@ pipeline {
             }
         }
 
+        stage('Install oc CLI') {
+            steps {
+                sh '''
+                    curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz -o /tmp/oc.tar.gz
+                    tar -xzf /tmp/oc.tar.gz -C /tmp
+                    chmod +x /tmp/oc
+                    mv /tmp/oc /usr/local/bin/oc || cp /tmp/oc $HOME/bin/oc
+                '''
+            }
+        }
+
         stage('Deploy to OpenShift') {
             steps {
                 withCredentials([
@@ -40,11 +51,7 @@ pipeline {
                         echo "Logging into OpenShift..."
                         oc login --token=$OC_TOKEN --server=$OC_SERVER
                         oc project th3rshifter-dev
-                        
-                        echo "Applying Kubernetes resources..."
                         oc apply -f k8s/
-                        
-                        echo "Waiting for deployment rollout..."
                         oc rollout status deployment/node-js-sample
                     '''
                 }
