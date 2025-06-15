@@ -24,17 +24,17 @@ pipeline {
             }
         }
 
-        stage('Install oc CLI') {
-            steps {
-                sh '''
-                    curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz -o /tmp/oc.tar.gz
-                    tar -xzf /tmp/oc.tar.gz -C /tmp
-                    chmod +x /tmp/oc
-                    cp /tmp/oc $HOME/bin/oc
-                '''
-            }
-        }
-
+    stage('Install oc CLI') {
+        steps {
+            sh '''
+            mkdir -p $HOME/bin
+            curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz -o /tmp/oc.tar.gz
+            tar -xzf /tmp/oc.tar.gz -C /tmp
+            chmod +x /tmp/oc
+            cp /tmp/oc $HOME/bin/oc
+            '''
+    }
+}
         stage('Build Docker Image') {
             steps {
                 withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
