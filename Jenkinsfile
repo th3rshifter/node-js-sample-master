@@ -29,16 +29,16 @@ pipeline {
         stage('Deploy to OpenShift') {
             steps {
                 withCredentials([
-                    string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')
-                    string(credentialsId: 'openshift-server', variable: 'OC_SERVER')
+                [$class: 'StringBinding', credentialsId: 'openshift-token', variable: 'OC_TOKEN'],
+                [$class: 'StringBinding', credentialsId: 'openshift-server', variable: 'OC_SERVER']
                 ]) {
-                sh '''
-                export PATH=$HOME/bin:$PATH
-                oc login --token=$OC_TOKEN --server=https://api.rm1.0a51.p1.openshiftapps.com:6443
-                oc project th3rshifter-dev
-                oc apply -f k8s/
-                oc rollout status deployment/node-js-sample
-                '''
+            sh '''
+            export PATH=$HOME/bin:$PATH
+            oc login --token=$OC_TOKEN --server=$OC_SERVER
+            oc project th3rshifter-dev
+            oc apply -f k8s/
+            oc rollout status deployment/node-js-sample
+            '''
                 }
             }
         }
