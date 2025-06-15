@@ -10,16 +10,6 @@ pipeline {
         IMAGE_NAME = 'node-nginx-sample'
         IMAGE_URL = 'image-registry.openshift-image-registry.svc:5000/th3rshifter-dev/node-nginx-sample'
     }
-
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                    credentialsId: 'gitlab-local-token',
-                    url: 'http://92.63.192.187:8929/th3rshifter/node-js-sample-master.git'
-            }
-        }
-
         stage('Build') {
             steps {
                 sh 'npm install'
