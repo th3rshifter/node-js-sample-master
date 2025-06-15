@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'node-js-sample' // test
+        nodejs 'node-js-sample'
     }
 
     environment {
