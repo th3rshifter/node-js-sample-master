@@ -28,7 +28,10 @@ pipeline {
 
         stage('Deploy to OpenShift') {
             steps {
-                withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
+                withCredentials([
+                    string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')
+                    string(credentialsId: 'openshift-server', variable: 'OC_SERVER')
+                ]) {
                 sh '''
                 export PATH=$HOME/bin:$PATH
                 oc login --token=$OC_TOKEN --server=https://api.rm1.0a51.p1.openshiftapps.com:6443
