@@ -60,7 +60,6 @@ pipeline {
                         oc project th3rshifter-dev
                         oc apply -f k8s/
                         oc rollout status deployment/node-js-sample
-                        echo OK
                     '''
                 }
             }
