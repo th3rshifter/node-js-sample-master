@@ -15,7 +15,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    credentialsId: 'glpat-fEssbcDqByoctyy1BJWr',
+                    credentialsId: 'gitlab-local-token',
                     url: 'http://92.63.192.187:8929/th3rshifter/node-js-sample-master.git'
             }
         }
