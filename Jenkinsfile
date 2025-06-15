@@ -10,6 +10,8 @@ pipeline {
         IMAGE_NAME = 'node-nginx-sample'
         IMAGE_URL = 'image-registry.openshift-image-registry.svc:5000/th3rshifter-dev/node-nginx-sample'
     }
+
+    stages {
         stage('Build') {
             steps {
                 sh 'npm install'
@@ -67,3 +69,4 @@ pipeline {
             }
         }
     }
+}
