@@ -35,6 +35,7 @@ pipeline {
             '''
     }
 }
+
         stage('Build Docker Image') {
             steps {
                 withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
