@@ -49,6 +49,8 @@ pipeline {
                 ]) {
                     sh '''
                         echo "Logging into OpenShift..."
+                        export PATH=$HOME/bin:$PATH
+                        which oc
                         oc login --token=$OC_TOKEN --server=$OC_SERVER
                         oc project th3rshifter-dev
                         oc apply -f k8s/
