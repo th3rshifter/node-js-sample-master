@@ -9,7 +9,7 @@ pipeline {
         OC_SERVER = 'https://api.rm1.0a51.p1.openshiftapps.com:6443'
         IMAGE_NAME = 'node-nginx-sample'
         IMAGE_TAG = 'latest'
-        IMAGE_URL = "image-registry.openshift-image-registry.svc:5000/th3rshifter-dev/node-nginx-sample"
+        IMAGE_URL = 'default-route-openshift-image-registry.apps.rm1.0a51.p1.openshiftapps.com/th3rshifter-dev/node-js-sample'
     }
 
     stages {
