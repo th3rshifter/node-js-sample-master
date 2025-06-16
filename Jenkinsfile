@@ -58,20 +58,18 @@ pipeline {
             }
         }
 
-        stage('Deploy to OpenShift') {
+        stage('Build & Deploy via OpenShift') {
             steps {
                 withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
-                    sh '''
-                    export PATH=$HOME/bin:$PATH
-                    oc login --token=$OC_TOKEN --server=$OC_SERVER
-                    oc project th3rshifter-dev
+            sh '''
+                echo "Login to OpenShift..."
+                export PATH=$HOME/bin:$PATH
+                oc login --token=$OC_TOKEN --server=$OC_SERVER
+                oc project th3rshifter-dev
 
-                    echo "🚀 Deploying manifests"
-                    oc apply -f k8s/
-
-                    echo "🔄 Waiting for rollout"
-                    oc rollout status deployment/node-js-sample
-                    '''
+                echo "Start binary build and deploy..."
+                oc start-build node-js-sample --from-dir=. --follow
+            '''
                 }
             }
         }
