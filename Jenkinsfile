@@ -1,75 +1,48 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'node-js-sample'
-    }
-
     environment {
         OC_SERVER = 'https://api.rm1.0a51.p1.openshiftapps.com:6443'
-        IMAGE_NAME = 'node-nginx-sample'
-        IMAGE_TAG = 'latest'
-        IMAGE_URL = 'default-route-openshift-image-registry.apps.rm1.0a51.p1.openshiftapps.com/th3rshifter-dev/node-js-sample'
+        IMAGE_NAME = 'node-js-sample'
+        IMAGE_URL = "image-registry.openshift-image-registry.svc:5000/th3rshifter-dev/node-js-sample"
     }
 
     stages {
-        stage('Build') {
-            steps {
-                sh 'npm install'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'npm test || echo "No tests found"'
-            }
-        }
-
-        stage('Install oc CLI') {
+        stage('Install tools') {
             steps {
                 sh '''
                 mkdir -p $HOME/bin
                 curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz -o /tmp/oc.tar.gz
                 tar -xzf /tmp/oc.tar.gz -C /tmp
                 chmod +x /tmp/oc
-                cp /tmp/oc $HOME/bin/oc
+                mv /tmp/oc $HOME/bin/oc
                 '''
             }
         }
 
-        stage('Build and Push to OpenShift Registry') {
+        stage('Build Image') {
             steps {
                 withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
                     sh '''
-                    echo "🔐 Login to OpenShift internal registry"
-                    export PATH=$HOME/bin:$PATH
                     echo $OC_TOKEN | docker login -u th3rshifter --password-stdin https://image-registry.openshift-image-registry.svc:5000
-
-                    echo "🐳 Building Docker image"
-                    docker build -t $IMAGE_NAME:$IMAGE_TAG .
-
-                    echo "🏷️ Tagging image"
-                    docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_URL:$IMAGE_TAG
-
-                    echo "📤 Pushing image"
-                    docker push $IMAGE_URL:$IMAGE_TAG
+                    docker build -t $IMAGE_NAME .
+                    docker tag $IMAGE_NAME $IMAGE_URL
+                    docker push $IMAGE_URL
                     '''
                 }
             }
         }
 
-        stage('Build & Deploy via OpenShift') {
+        stage('Deploy to OpenShift') {
             steps {
                 withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
-            sh '''
-                echo "Login to OpenShift..."
-                export PATH=$HOME/bin:$PATH
-                oc login --token=$OC_TOKEN --server=$OC_SERVER
-                oc project th3rshifter-dev
-
-                echo "Start binary build and deploy..."
-                oc start-build node-js-sample --from-dir=. --follow
-            '''
+                    sh '''
+                    export PATH=$HOME/bin:$PATH
+                    oc login --token=$OC_TOKEN --server=$OC_SERVER
+                    oc project th3rshifter-dev
+                    oc apply -f k8s/
+                    oc rollout status deployment/node-js-sample
+                    '''
                 }
             }
         }
