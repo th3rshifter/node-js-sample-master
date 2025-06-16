@@ -20,7 +20,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'npm test || echo "no tests found"'
+                sh 'npm test || echo "No tests found"'
             }
         }
 
