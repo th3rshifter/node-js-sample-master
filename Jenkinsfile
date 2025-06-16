@@ -9,19 +9,19 @@ pipeline {
         PATH = "$HOME/bin:$PATH"
     }
 
-    stages {
-        stage('Install OC CLI') {
-            steps {
-                sh '''
-                mkdir -p $HOME/bin
-                curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz -o /tmp/oc.tar.gz
-                tar -xzf /tmp/oc.tar.gz -C $HOME/bin
-                chmod +x $HOME/bin/oc
-                export PATH=$HOME/bin:$PATH
-                oc version || true
-                '''
-            }
-        }
+    // stages {
+    //     stage('Install OC CLI') {
+    //         steps {
+    //             sh '''
+    //             mkdir -p $HOME/bin
+    //             curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz -o /tmp/oc.tar.gz
+    //             tar -xzf /tmp/oc.tar.gz -C $HOME/bin
+    //             chmod +x $HOME/bin/oc
+    //             export PATH=$HOME/bin:$PATH
+    //             oc version || true
+    //             '''
+    //         }
+    //     }
 
         stage('Build Image') {
             steps {
