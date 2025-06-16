@@ -9,7 +9,7 @@ pipeline {
         PATH = "$HOME/bin:$PATH"
     }
 
-    // stages {
+     stages {
     //     stage('Install OC CLI') {
     //         steps {
     //             sh '''
