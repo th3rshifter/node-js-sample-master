@@ -13,11 +13,12 @@ pipeline {
         stage('Install OC CLI') {
             steps {
                 sh '''
-                    mkdir -p $OC_CLI_DIR
-                    curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz -o /tmp/oc.tar.gz
-                    tar -xzf /tmp/oc.tar.gz -C $OC_CLI_DIR
-                    chmod +x $OC_CLI_DIR/oc
-                    $OC_CLI_DIR/oc version || true
+                mkdir -p $HOME/bin
+                curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz -o /tmp/oc.tar.gz
+                tar -xzf /tmp/oc.tar.gz -C $HOME/bin
+                chmod +x $HOME/bin/oc
+                export PATH=$HOME/bin:$PATH
+                oc version || true
                 '''
             }
         }
