@@ -54,15 +54,19 @@ pipeline {
         stage('Deploy to OpenShift') {
             steps {
                 withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
-                    sh '''
-                        echo Logging into OpenShift...
-                        export PATH=$HOME/bin:$PATH
-                        oc login --token=$OC_TOKEN --server=$OC_SERVER
-                        oc project th3rshifter-dev
-                        oc apply -f k8s/
-                        oc rollout status deployment/node-js-sample
-                    '''
-                }
+            sh '''
+                echo Logging into OpenShift...
+                export PATH=$HOME/bin:$PATH
+                oc login --token=$OC_TOKEN --server=$OC_SERVER
+                oc project th3rshifter-dev
+
+                echo Applying k8s manifests...
+                oc apply -f k8s/
+
+                echo Waiting for rollout...
+                oc rollout status deployment/node-js-sample
+            '''
+                 }
             }
         }
     }
