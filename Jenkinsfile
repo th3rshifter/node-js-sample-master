@@ -4,23 +4,20 @@ pipeline {
     environment {
         OC_SERVER = 'https://api.rm1.0a51.p1.openshiftapps.com:6443'
         IMAGE_NAME = 'node-js-sample'
-        IMAGE_URL = "image-registry.openshift-image-registry.svc:5000/th3rshifter-dev/node-js-sample"
-        OC_CLI_DIR = "$HOME/bin"
-        PATH = "$HOME/bin:$PATH"
+        IMAGE_URL = 'image-registry.openshift-image-registry.svc:5000/th3rshifter-dev/node-js-sample'
+        OC_CLI_DIR = "${env.WORKSPACE}/oc-bin"
+        PATH = "${env.WORKSPACE}/oc-bin:${env.PATH}"
     }
 
     stages {
-        stage('Install OC CLI') {
+        stage('Install oc CLI') {
             steps {
                 sh '''
-                    mkdir -p $HOME/bin
-                    curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz -o /tmp/oc.tar.gz
+                    mkdir -p $OC_CLI_DIR
+                    curl -sL https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz -o /tmp/oc.tar.gz
                     tar -xzf /tmp/oc.tar.gz -C /tmp
-                    chmod +x /tmp/oc /tmp/kubectl
-                    mv /tmp/oc $HOME/bin/oc
-                    mv /tmp/kubectl $HOME/bin/kubectl
-                    export PATH=$HOME/bin:$PATH
-                    oc version || true
+                    mv /tmp/oc $OC_CLI_DIR/oc
+                    chmod +x $OC_CLI_DIR/oc
                 '''
             }
         }
@@ -42,11 +39,10 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
                     sh '''
-                        export PATH=$HOME/bin:$PATH
-                        $HOME/bin/oc login --token=$OC_TOKEN --server=$OC_SERVER
-                        $HOME/bin/oc project th3rshifter-dev
-                        $HOME/bin/oc apply -f k8s/
-                        $HOME/bin/oc rollout status deployment/node-js-sample
+                        oc login --token=$OC_TOKEN --server=$OC_SERVER --insecure-skip-tls-verify=true
+                        oc project th3rshifter-dev
+                        oc apply -f k8s/
+                        oc rollout status deployment/node-js-sample
                     '''
                 }
             }
