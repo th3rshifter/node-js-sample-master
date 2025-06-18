@@ -6,6 +6,9 @@ pipeline {
         PROJECT = 'th3rshifter-dev'
         APP_NAME = 'node-js-sample'
     }
+    
+    stages {
+
     stage('Install OC CLI') {
         steps {
         sh '''
@@ -46,4 +49,5 @@ pipeline {
                 '''
             }
         }
+    }
 }
