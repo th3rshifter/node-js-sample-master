@@ -6,16 +6,17 @@ pipeline {
         PROJECT = 'th3rshifter-dev'
         APP_NAME = 'node-js-sample'
     }
-    stages {
-        stage('Install OC CLI') {
-    steps {
+    stage('Install OC CLI') {
+        steps {
         sh '''
             mkdir -p $HOME/bin
             curl -L https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz -o /tmp/oc.tar.gz
             tar -xzf /tmp/oc.tar.gz -C /tmp
-            mv /tmp/oc /tmp/kubectl $HOME/bin/
-            chmod +x $HOME/bin/oc $HOME/bin/kubectl
+            chmod +x /tmp/oc /tmp/kubectl
+            mv /tmp/oc $HOME/bin/oc
+            mv /tmp/kubectl $HOME/bin/kubectl
             export PATH=$HOME/bin:$PATH
+            oc version || true
         '''
     }
 }
