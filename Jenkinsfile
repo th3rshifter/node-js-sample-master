@@ -6,8 +6,8 @@ pipeline {
         PROJECT = 'th3rshifter-dev'
         APP_NAME = 'node-js-sample'
     }
-    
-stage('Install OC CLI') {
+    stages {
+        stage('Install OC CLI') {
     steps {
         sh '''
             mkdir -p $HOME/bin
@@ -19,8 +19,6 @@ stage('Install OC CLI') {
         '''
     }
 }
-
-    stages {
         stage('Login to OpenShift') {
             steps {
                 withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
