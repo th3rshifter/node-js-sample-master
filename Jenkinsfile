@@ -8,6 +8,8 @@ pipeline {
         PROJECT_NAME = "th3rshifter-dev"
     }
 
+    stages {
+
     stage('Build Image') {
             steps {
             withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
@@ -35,3 +37,4 @@ pipeline {
             }
         }
     }
+}
