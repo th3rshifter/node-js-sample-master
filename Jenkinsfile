@@ -29,6 +29,8 @@ pipeline {
                     echo "🔄 Switching to project $PROJECT_NAME..."
                     export KUBECONFIG=$WORKSPACE/.kubeconfig
                     oc project $PROJECT_NAME
+                    sh 'ls -l'
+                    sh 'cat Dockerfile'
 
                     echo "📦 Starting OpenShift build..."
                     oc start-build $IMAGE_NAME --from-dir=. --follow
