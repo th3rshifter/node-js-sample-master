@@ -22,14 +22,14 @@ pipeline {
         stage('Deploy to OpenShift') {
             steps {
                 withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
-                    sh '''
-                        oc login --token=$OC_TOKEN --server=$OC_SERVER
-                        oc project $PROJECT_NAME
-                        oc apply -f k8s/
-                        oc rollout status deployment/node-js-sample
-                    '''
-                }
-            }
+            sh """
+                oc login --token=${OC_TOKEN} --server=${OC_SERVER}
+                oc project ${PROJECT_NAME}
+                oc apply -f k8s/
+                oc rollout status deployment/node-js-sample
+            """
         }
+    }
+}    
     }
 }
