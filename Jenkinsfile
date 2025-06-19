@@ -46,7 +46,7 @@ pipeline {
                     echo "📄 Applying Kubernetes manifests from k8s/..."
                     oc apply -f k8s/
 
-                    echo "⏳ Waiting for deployment rollout to complete..."
+                    echo "Waiting for deployment rollout to complete..."
                     oc rollout status deployment/$IMAGE_NAME
                 '''
             }
