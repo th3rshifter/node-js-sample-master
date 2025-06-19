@@ -30,6 +30,13 @@ pipeline {
                     export KUBECONFIG=$WORKSPACE/.kubeconfig
                     oc project $PROJECT_NAME
                     echo "Starting OpenShift build..."
+    sh 'echo 📂 Текущая директория: $(pwd)'
+    sh 'echo 📄 Содержимое текущей директории:'
+    sh 'ls -l'
+
+    sh 'echo 📄 Ищем Dockerfile:'
+    sh 'cat Dockerfile || echo "❌ Dockerfile не найден"'
+
                     oc start-build $IMAGE_NAME --from-dir=. --follow
                 '''
             }
