@@ -4,7 +4,7 @@ pipeline {
     environment {
         OC_SERVER = 'https://api.rm1.0a51.p1.openshiftapps.com:6443'
         OC_TOKEN = 'sha256~L6RefD8IuTdgtTMQfPXXGmg9YPhwGD91sLMHIrQHO58'
-        IMAGE_NAME = 'node-nginx-sample'
+        IMAGE_NAME = 'node-js-sample'
         IMAGE_URL = "image-registry.openshift-image-registry.svc:5000/th3rshifter-dev/node-js-sample"
         PROJECT_NAME = "th3rshifter-dev"
         KUBECONFIG = "${WORKSPACE}/.kubeconfig"
@@ -39,14 +39,19 @@ pipeline {
         stage('Deploy to OpenShift') {
             steps {
                 sh '''
-                    echo "🚀 Deploying to OpenShift..."
+                    echo "🪪 Current directory:"
+                    pwd
+                    echo "📂 Files in ./k8s/:"
+                    ls -l k8s/
+
+                    echo "📄 Showing contents of k8s/deployment.yaml:"
+                    cat k8s/deployment.yaml
+
+                    echo "🚀 Applying deployment to OpenShift..."
                     export KUBECONFIG=$WORKSPACE/.kubeconfig
                     oc project $PROJECT_NAME
-
-                    echo "📄 Applying Kubernetes manifests from k8s/..."
                     oc apply -f k8s/
-
-                    echo "Waiting for deployment rollout to complete..."
+                    echo "⏳ Waiting for rollout..."
                     oc rollout status deployment/$IMAGE_NAME
                 '''
             }
