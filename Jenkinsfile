@@ -15,10 +15,10 @@ pipeline {
         stage('Login to OpenShift') {
             steps {
                 sh '''
-                    echo "🔐 Logging in to OpenShift..."
+                    echo "Logging in to OpenShift..."
                     export KUBECONFIG=$WORKSPACE/.kubeconfig
                     oc login --token=$OC_TOKEN --server=$OC_SERVER
-                    echo "👤 Logged in as: $(oc whoami)"
+                    echo "Logged in as: $(oc whoami)"
                 '''
             }
         }
@@ -26,13 +26,10 @@ pipeline {
         stage('Build Image in OpenShift') {
             steps {
                 sh '''
-                    echo "🔄 Switching to project $PROJECT_NAME..."
+                    echo "Switching to project $PROJECT_NAME..."
                     export KUBECONFIG=$WORKSPACE/.kubeconfig
                     oc project $PROJECT_NAME
-                    sh 'ls -l'
-                    sh 'cat Dockerfile'
-
-                    echo "📦 Starting OpenShift build..."
+                    echo "Starting OpenShift build..."
                     oc start-build $IMAGE_NAME --from-dir=. --follow
                 '''
             }
@@ -41,19 +38,19 @@ pipeline {
 stage('Deploy to OpenShift') {
     steps {
         sh '''
-            echo "🔧 Fixing image in deployment.yaml..."
+            echo "Fixing image in deployment.yaml..."
             sed -i "s|image: .*|image: $IMAGE_URL:latest|" k8s/deployment.yaml
 
-            echo "✅ Final deployment.yaml content:"
+            echo "Final deployment.yaml content:"
             cat k8s/deployment.yaml
 
             export KUBECONFIG=$WORKSPACE/.kubeconfig
             oc project $PROJECT_NAME
 
-            echo "📥 Applying deployment.yaml..."
+            echo "Applying deployment.yaml..."
             oc apply -f k8s/
 
-            echo "⏳ Waiting for rollout..."
+            echo "Waiting for rollout..."
             oc rollout status deployment/$IMAGE_NAME
         '''
             }
