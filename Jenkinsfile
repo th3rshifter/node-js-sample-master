@@ -8,20 +8,20 @@ pipeline {
         PROJECT_NAME = "th3rshifter-dev"
     }
 
-    stages {
-        stage('Build Image') {
+    stage('Build Image') {
             steps {
-                withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
-                    sh """
-                        echo "${OC_TOKEN}" | docker login -u th3rshifter --password-stdin https://image-registry.openshift-image-registry.svc:5000
-                        docker build -t ${IMAGE_NAME} .
-                        docker tag ${IMAGE_NAME} ${IMAGE_URL}
-                        docker push ${IMAGE_URL}
-                    """
-                }
-            }
-        }
+            withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
+            sh '''
+                echo "Logging in to OpenShift..."
+                oc login --token=$OC_TOKEN --server=$OC_SERVER
 
+                echo "Building image and pushing via OpenShift..."
+                oc project $PROJECT_NAME
+                oc start-build node-js-sample --from-dir=. --follow
+            '''
+        }
+    }
+}
         stage('Deploy to OpenShift') {
             steps {
                 withCredentials([string(credentialsId: 'openshift-token', variable: 'OC_TOKEN')]) {
