@@ -4,7 +4,7 @@ pipeline {
     environment {
         OC_SERVER = 'https://api.rm1.0a51.p1.openshiftapps.com:6443'
         OC_TOKEN = 'sha256~L6RefD8IuTdgtTMQfPXXGmg9YPhwGD91sLMHIrQHO58'
-        IMAGE_NAME = 'node-js-sample'
+        IMAGE_NAME = 'node-nginx-sample'
         IMAGE_URL = "image-registry.openshift-image-registry.svc:5000/th3rshifter-dev/node-js-sample"
         PROJECT_NAME = "th3rshifter-dev"
         KUBECONFIG = "${WORKSPACE}/.kubeconfig"
