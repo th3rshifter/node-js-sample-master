@@ -3,10 +3,11 @@ pipeline {
 
     environment {
         OC_SERVER = 'https://api.rm1.0a51.p1.openshiftapps.com:6443'
+        OC_TOKEN = 'sha256~L6RefD8IuTdgtTMQfPXXGmg9YPhwGD91sLMHIrQHO58'
         IMAGE_NAME = 'node-js-sample'
         IMAGE_URL = "image-registry.openshift-image-registry.svc:5000/th3rshifter-dev/node-js-sample"
         PROJECT_NAME = "th3rshifter-dev"
-        OC_TOKEN = 'sha256~L6RefD8IuTdgtTMQfPXXGmg9YPhwGD91sLMHIrQHO58'
+        KUBECONFIG = "${WORKSPACE}/.kubeconfig"
     }
 
     stages {
@@ -14,8 +15,10 @@ pipeline {
         stage('Login to OpenShift') {
             steps {
                 sh '''
-                    echo "Logging in to OpenShift..."
+                    echo "🔐 Logging in to OpenShift..."
+                    export KUBECONFIG=$WORKSPACE/.kubeconfig
                     oc login --token=$OC_TOKEN --server=$OC_SERVER
+                    echo "👤 Logged in as: $(oc whoami)"
                 '''
             }
         }
@@ -23,10 +26,11 @@ pipeline {
         stage('Build Image in OpenShift') {
             steps {
                 sh '''
-                    echo "Switching to project $PROJECT_NAME..."
+                    echo "🔄 Switching to project $PROJECT_NAME..."
+                    export KUBECONFIG=$WORKSPACE/.kubeconfig
                     oc project $PROJECT_NAME
 
-                    echo "Starting OpenShift build..."
+                    echo "📦 Starting OpenShift build..."
                     oc start-build $IMAGE_NAME --from-dir=. --follow
                 '''
             }
@@ -35,13 +39,14 @@ pipeline {
         stage('Deploy to OpenShift') {
             steps {
                 sh '''
-                    echo "Switching to project $PROJECT_NAME..."
+                    echo "🚀 Deploying to OpenShift..."
+                    export KUBECONFIG=$WORKSPACE/.kubeconfig
                     oc project $PROJECT_NAME
 
-                    echo "Applying manifests from k8s/ directory..."
+                    echo "📄 Applying Kubernetes manifests from k8s/..."
                     oc apply -f k8s/
 
-                    echo "Waiting for deployment rollout to complete..."
+                    echo "⏳ Waiting for deployment rollout to complete..."
                     oc rollout status deployment/$IMAGE_NAME
                 '''
             }
