@@ -36,25 +36,25 @@ pipeline {
             }
         }
 
-        stage('Deploy to OpenShift') {
-            steps {
-                sh '''
-                    echo "🪪 Current directory:"
-                    pwd
-                    echo "📂 Files in ./k8s/:"
-                    ls -l k8s/
+stage('Deploy to OpenShift') {
+    steps {
+        sh '''
+            echo "🔧 Fixing image in deployment.yaml..."
+            sed -i "s|image: .*|image: $IMAGE_URL:latest|" k8s/deployment.yaml
 
-                    echo "📄 Showing contents of k8s/deployment.yaml:"
-                    cat k8s/deployment.yaml
+            echo "✅ Final deployment.yaml content:"
+            cat k8s/deployment.yaml
 
-                    echo "🚀 Applying deployment to OpenShift..."
-                    export KUBECONFIG=$WORKSPACE/.kubeconfig
-                    oc project $PROJECT_NAME
-                    oc apply -f k8s/
-                    echo "⏳ Waiting for rollout..."
-                    oc rollout status deployment/$IMAGE_NAME
-                '''
+            export KUBECONFIG=$WORKSPACE/.kubeconfig
+            oc project $PROJECT_NAME
+
+            echo "📥 Applying deployment.yaml..."
+            oc apply -f k8s/
+
+            echo "⏳ Waiting for rollout..."
+            oc rollout status deployment/$IMAGE_NAME
+        '''
             }
-        }
+         }
     }
 }
