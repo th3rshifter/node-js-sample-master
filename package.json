@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "build": "echo 'No build step needed'",
     "test": "echo \"No tests defined\" && exit 0"
   },
   "dependencies": {
@@ -21,10 +22,6 @@
     "node",
     "heroku",
     "express"
-  ],
-  "author": "Mark Pundsack",
-  "contributors": [
-    "Zeke Sikelianos <zeke@sikelianos.com> (http://zeke.sikelianos.com)"
   ],
   "license": "MIT"
 }
