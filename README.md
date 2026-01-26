@@ -17,11 +17,3 @@ Docker, Dockerfile
 NGINX (как веб-сервер или прокси)
 Shell, YAML, Groovy
 oc CLI для управления OpenShift
-
-## Commit
-
-git add .
-git commit -m ""
-git push origin feature/add
-
-## 
